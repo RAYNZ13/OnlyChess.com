@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Chess Game</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .chessboard {
@@ -55,16 +55,52 @@
             opacity: 0.5;
         }
 
-        /* Rotate pieces for black player */
         .flipped .piece {
             transform: rotate(180deg);
+        }
+
+        .move-history {
+            margin-left: 20px;
+            color: white;
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            padding: 10px;
+            border-radius: 8px;
+            width: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .move_title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffeb3b; 
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #ffeb3b; 
+            padding-bottom: 5px;
+        }
+
+        .move-history div {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-bottom: 1px solid #555;
+        }
+
+        .move-history div:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
 <body>
     <div class="w-full h-screen flex items-center justify-center bg-zinc-900">
-        <div class="chessboard w-96 h-96 bg-red-600"></div>
+        <div class="chessboard w-96 h-96"></div>
 
+        <div class="move-history">
+            <p class="move_title">Move History</p>
+        </div>
     </div>
 
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>

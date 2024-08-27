@@ -1,6 +1,7 @@
 const socket = io();
 const chess = new Chess();
 const boardElement = document.querySelector(".chessboard");
+const moveHistoryElement = document.querySelector(".move-history"); 
 
 let draggedPiece = null;
 let sourceSquare = null;
@@ -125,4 +126,24 @@ socket.on("move",(fen) =>{
     chess.move(fen);
     renderBoard();
 })
+
+socket.on("Checkmate",(winner) => {
+    alert(`${winner} wins by Checkmate!`);
+})
 renderBoard();
+
+socket.on("moveHistory", (history) => {
+    updateMoveHistory(history); 
+});
+
+const updateMoveHistory = (history) => {
+    const moveTitle = document.querySelector(".move_title");
+    moveHistoryElement.innerHTML = ""; 
+    moveHistoryElement.appendChild(moveTitle);
+
+    history.forEach((move, index) => {
+        const moveElement = document.createElement("div");
+        moveElement.textContent = `${index + 1}. ${move.from} to ${move.to}`;
+        moveHistoryElement.appendChild(moveElement);
+    });
+};

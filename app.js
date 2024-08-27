@@ -22,6 +22,8 @@ app.get("/", (req, res) => {
     res.render("index", {title: " Chess Game "});
 })
 
+let moveHistory = [];
+
 io.on("connection", function(uniqueSocket){
     console.log("Connected");
 
@@ -57,8 +59,14 @@ io.on("connection", function(uniqueSocket){
             const result = chess.move(move);
             if(result){
                 currentPlayer = chess.turn();
+                moveHistory.push(move);
                 io.emit("move", move); //frontend me result bhejo
-                io.emit("boardState", chess.fen())
+                io.emit("boardState", chess.fen());
+                io.emit("moveHistory", moveHistory);
+
+                if(chess.isCheckmate()){
+                    io.emit("Checkmate", chess.turn() === 'w' ? 'Black' : 'White');
+                }
             }else{
                 console.log("Invalid Move: ", move);
                 uniqueSocket.emit("InvalidMove", move); //sirf jisne galat khela hai usko msg jaaye ga
