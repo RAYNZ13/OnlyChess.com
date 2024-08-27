@@ -114,6 +114,7 @@ socket.on("playerRole",(role) =>{
 
 socket.on("spectatorRole",() =>{
     playerRole = null;
+    alert("You are in Sepctator Mode");
     renderBoard();
 })
 
