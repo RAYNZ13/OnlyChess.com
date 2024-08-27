@@ -3,7 +3,7 @@ const socket = require('socket.io');
 const http = require('http');
 const {Chess} = require('chess.js');
 const path = require('path');
-const { title } = require('process');
+const { title, emitWarning } = require('process');
 
 const app = express();
  
@@ -40,14 +40,24 @@ io.on("connection", function(uniqueSocket){
     }
 
     uniqueSocket.on("disconnect", function(){
+        let winner = null;
         //check karo ke kon disconnect hua hai
         if(uniqueSocket.id === players.white){ //agar white disconnect hua hai toh white ko delete kardo
             delete players.white;
+            if(players.black){
+                winner = "black";
+            }
         }
         else if(uniqueSocket.id === players.black){ //agar black disconnect hua hai toh black ko delete kardo
             delete players.black;
+            if(players.white){
+                winner = "white";
+            }
         }
         //agar spectator disconnect hua toh kuch mat karo
+        if(winner){
+            io.emit("gameOver", `${winner} wins by default due to opponent disconnecting.`)
+        }
     });
 
     uniqueSocket.on("move", (move)=>{
@@ -77,6 +87,12 @@ io.on("connection", function(uniqueSocket){
             console.log(err);
             uniqueSocket.emit("Invalid Move: ", move);
         }
+    })
+
+    uniqueSocket.on("resetGame", () => {
+        chess.reset();
+        io.emit("boardState", chess.fen());
+        io.emit("newGame");
     })
 });
 

@@ -128,9 +128,29 @@ socket.on("move",(fen) =>{
 })
 
 socket.on("Checkmate",(winner) => {
-    alert(`${winner} wins by Checkmate!`);
+    const gameOver =document.querySelector(".game-over");
+    gameOver.querySelector(".winner").textContent = `${winner} wins by Checkmate!`;
+    gameOver.classList.remove("hidden");
+    renderBoard();
 })
-renderBoard();
+
+document.querySelector(".new-game-btn").addEventListener("click", () => {
+    socket.emit("resetGame"); // Emit the reset event to the server
+});
+
+socket.on("newGame", () => {
+    const gameOverScreen = document.querySelector(".game-over");
+    gameOverScreen.classList.add("hidden"); // Hide the game-over screen
+    clearMoveHistory();
+    renderBoard(); // Re-render the board
+});
+
+socket.on("gameOver", (message) => {
+    const gameOverScreen = document.querySelector(".game-over");
+    gameOverScreen.querySelector(".winner").textContent = message;
+    gameOverScreen.classList.remove("hidden"); // Show the game-over screen
+});
+
 
 socket.on("moveHistory", (history) => {
     updateMoveHistory(history); 
@@ -147,3 +167,10 @@ const updateMoveHistory = (history) => {
         moveHistoryElement.appendChild(moveElement);
     });
 };
+
+function clearMoveHistory(){
+    const moveHistoryElement = document.querySelector(".move-history");
+    if(moveHistoryElement){
+        moveHistoryElement.innerHTML = "";
+    }
+}
